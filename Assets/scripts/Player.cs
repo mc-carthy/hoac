@@ -90,6 +90,7 @@ public class Player : MonoBehaviour {
 	private void FireHook ()
 	{
 		hookPoint = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+		hookPoint.z = 0;
 
 		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 		RaycastHit2D hit = Physics2D.Raycast (ray.origin, ray.direction, Mathf.Infinity);
@@ -102,6 +103,7 @@ public class Player : MonoBehaviour {
 				dj.distance = Vector2.Distance (transform.position, hookPoint);
 				isHooked = true;
 				dj.enabled = true;
+				lr.enabled = true;
 			}
 		}
 	}
@@ -115,6 +117,7 @@ public class Player : MonoBehaviour {
 	{
 		isHooked = false;
 		dj.enabled = false;
+		lr.enabled = false;
 	}
 
 	private void DrawRope ()

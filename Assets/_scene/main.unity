@@ -1431,7 +1431,7 @@ LineRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1454,7 +1454,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 2
-    widthMultiplier: 1
+    widthMultiplier: 0.1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -1473,7 +1473,7 @@ LineRenderer:
         rgba: 4278218166
       key1:
         serializedVersion: 2
-        rgba: 4294967295
+        rgba: 4278218166
       key2:
         serializedVersion: 2
         rgba: 0
