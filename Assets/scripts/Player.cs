@@ -10,6 +10,8 @@ public class Player : MonoBehaviour {
 	private float jumpForce = 500;
 	[SerializeField]
 	private float hookReelSpeed = 5;
+	[SerializeField]
+	private LayerMask hookableMask;
 	private Rigidbody2D rb;
 	private DistanceJoint2D dj;
 	private LineRenderer lr;
@@ -92,15 +94,16 @@ public class Player : MonoBehaviour {
 		hookPoint = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 		hookPoint.z = 0;
 
-		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-		RaycastHit2D hit = Physics2D.Raycast (ray.origin, ray.direction, Mathf.Infinity);
+		RaycastHit2D hit = Physics2D.Raycast (transform.position, hookPoint - transform.position, Mathf.Infinity, hookableMask);
 
 		if (hit.collider != null)
 		{
 			if (hit.collider.gameObject.tag == "ground")
 			{
-				dj.connectedAnchor = hookPoint;
-				dj.distance = Vector2.Distance (transform.position, hookPoint);
+				dj.connectedAnchor = hit.point;
+				dj.distance = Vector2.Distance (transform.position, hit.point);
+				hookPoint.x = hit.point.x;
+				hookPoint.y = hit.point.y;
 				isHooked = true;
 				dj.enabled = true;
 				lr.enabled = true;
