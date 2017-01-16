@@ -5,6 +5,10 @@
 public class Player : MonoBehaviour {
 
 	[SerializeField]
+	private Hook hookPrefab;
+	[SerializeField]
+	private Transform hookStartPoint;
+	[SerializeField]
 	private float moveForce = 500;
 	[SerializeField]
 	private float jumpForce = 500;
@@ -12,11 +16,13 @@ public class Player : MonoBehaviour {
 	private float hookReelSpeed = 5;
 	[SerializeField]
 	private LayerMask hookableMask;
+	private Hook hook;
 	private Rigidbody2D rb;
 	private DistanceJoint2D dj;
 	private LineRenderer lr;
 	private Vector3 hookPoint;
 	private bool isHooked = false;
+	public bool isFiring = false;
 	private bool isJumping = false;
 
 	private void Awake ()
@@ -24,6 +30,7 @@ public class Player : MonoBehaviour {
 		rb = GetComponent<Rigidbody2D> ();
 		dj = GetComponent<DistanceJoint2D> ();
 		lr = GetComponent<LineRenderer> ();
+		hook = Instantiate (hookPrefab, hookStartPoint.position, Quaternion.identity) as Hook;
 	}
 
 	private void Start ()
@@ -34,19 +41,33 @@ public class Player : MonoBehaviour {
 	private void Update ()
 	{
 		MovePlayer ();
-		if (Input.GetKeyDown (KeyCode.Space) && isJumping == false)
+		if (Input.GetKeyDown (KeyCode.Space))
 		{
-			Jump ();
+			if (!isJumping && !isHooked)
+			{
+				Jump ();
+			}
+			if (isHooked)
+			{
+				RetractHook ();
+			}
 		}
 
 		if (Input.GetKeyDown (KeyCode.Mouse0) && isHooked == false)
 		{
-			FireHook ();
+			ShootHook ();
 		}
 
 		if (isHooked)
 		{
 			AlterHookDistance ();
+		}
+		else
+		{
+			if (!isFiring)
+			{
+				hook.transform.position = hookStartPoint.position;
+			}
 		}
 
 		if (Input.GetKeyUp (KeyCode.Mouse0) && isHooked == true)
@@ -89,26 +110,38 @@ public class Player : MonoBehaviour {
 		rb.AddForce (Vector2.up * jumpForce);
 	}
 
-	private void FireHook ()
+	private void ShootHook ()
 	{
 		hookPoint = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 		hookPoint.z = 0;
 
-		RaycastHit2D hit = Physics2D.Raycast (transform.position, hookPoint - transform.position, Mathf.Infinity, hookableMask);
+		RaycastHit2D hit = Physics2D.Raycast (hookStartPoint.position, hookPoint - hookStartPoint.position, Mathf.Infinity, hookableMask);
 
 		if (hit.collider != null)
 		{
 			if (hit.collider.gameObject.tag == "ground")
 			{
-				dj.connectedAnchor = hit.point;
-				dj.distance = Vector2.Distance (transform.position, hit.point);
-				hookPoint.x = hit.point.x;
-				hookPoint.y = hit.point.y;
-				isHooked = true;
-				dj.enabled = true;
-				lr.enabled = true;
+				FireHook ();
+				isFiring = true;
 			}
 		}
+	}
+
+	private void FireHook ()
+	{
+		hook.Fire (hookStartPoint.position, hookPoint);
+	}
+
+	public void HookLanded (Vector3 hookLandedPoint)
+	{
+		dj.connectedAnchor = hookLandedPoint;
+		dj.distance = Vector2.Distance (transform.position, hookLandedPoint);
+		hookPoint.x = hookLandedPoint.x;
+		hookPoint.y = hookLandedPoint.y;
+		isHooked = true;
+		isFiring = false;
+		dj.enabled = true;
+		lr.enabled = true;
 	}
 
 	private void AlterHookDistance ()
@@ -119,6 +152,7 @@ public class Player : MonoBehaviour {
 	private void RetractHook ()
 	{
 		isHooked = false;
+		hook.isLanded = false;
 		dj.enabled = false;
 		lr.enabled = false;
 	}
