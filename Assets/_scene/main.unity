@@ -2000,7 +2000,6 @@ GameObject:
   m_Component:
   - component: {fileID: 598624346}
   - component: {fileID: 598624347}
-  - component: {fileID: 598624348}
   m_Layer: 8
   m_Name: floorPanel (1)
   m_TagString: ground
@@ -2054,26 +2053,6 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -0.5}
   serializedVersion: 2
   m_Size: {x: 19, y: 2}
---- !u!50 &598624348
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 598624345}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 7
 --- !u!1 &611653583
 GameObject:
   m_ObjectHideFlags: 0
@@ -2429,7 +2408,6 @@ GameObject:
   m_Component:
   - component: {fileID: 729962050}
   - component: {fileID: 729962051}
-  - component: {fileID: 729962052}
   m_Layer: 8
   m_Name: floorPanel
   m_TagString: ground
@@ -2483,26 +2461,6 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -0.5}
   serializedVersion: 2
   m_Size: {x: 19, y: 2}
---- !u!50 &729962052
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 729962049}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 7
 --- !u!1 &737874377
 GameObject:
   m_ObjectHideFlags: 0
@@ -2572,7 +2530,6 @@ GameObject:
   m_Component:
   - component: {fileID: 810209050}
   - component: {fileID: 810209051}
-  - component: {fileID: 810209052}
   m_Layer: 8
   m_Name: platform (1)
   m_TagString: ground
@@ -2612,26 +2569,6 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 5, y: 1}
---- !u!50 &810209052
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 810209049}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 7
 --- !u!1 &832594097
 GameObject:
   m_ObjectHideFlags: 0
@@ -5517,7 +5454,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 7
+  m_Constraints: 0
 --- !u!1 &1803818567
 GameObject:
   m_ObjectHideFlags: 0

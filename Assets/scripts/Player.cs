@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 
 [RequireComponent (typeof (DistanceJoint2D))]
-[RequireComponent (typeof (LineRenderer))]
 public class Player : MonoBehaviour {
 
 	[SerializeField]
-	private Hook hookPrefab;
-	[SerializeField]
 	private Transform hookStartPoint;
+	public Transform HookStartPoint 
+	{ 
+		get { return hookStartPoint; } 
+	}
+
+	[SerializeField]
+	private Hook hookPrefab;
 	[SerializeField]
 	private float moveForce = 500;
 	[SerializeField]
@@ -19,7 +23,6 @@ public class Player : MonoBehaviour {
 	private Hook hook;
 	private Rigidbody2D rb;
 	private DistanceJoint2D dj;
-	private LineRenderer lr;
 	private Vector3 hookPoint;
 	private bool isHooked = false;
 	public bool isFiring = false;
@@ -29,7 +32,6 @@ public class Player : MonoBehaviour {
 	{
 		rb = GetComponent<Rigidbody2D> ();
 		dj = GetComponent<DistanceJoint2D> ();
-		lr = GetComponent<LineRenderer> ();
 		hook = Instantiate (hookPrefab, hookStartPoint.position, Quaternion.identity) as Hook;
 	}
 
@@ -73,14 +75,6 @@ public class Player : MonoBehaviour {
 		if (Input.GetKeyUp (KeyCode.Mouse0) && isHooked == true)
 		{
 			RetractHook ();
-		}
-	}
-
-	private void LateUpdate ()
-	{
-		if (isHooked)
-		{
-			DrawRope ();
 		}
 	}
 
@@ -141,7 +135,6 @@ public class Player : MonoBehaviour {
 		isHooked = true;
 		isFiring = false;
 		dj.enabled = true;
-		lr.enabled = true;
 	}
 
 	private void AlterHookDistance ()
@@ -154,15 +147,8 @@ public class Player : MonoBehaviour {
 		isHooked = false;
 		hook.isLanded = false;
 		dj.enabled = false;
-		lr.enabled = false;
-	}
-
-	private void DrawRope ()
-	{
-		lr.numPositions = 2;
-		lr.SetPosition (0, transform.position + Vector3.back);
-		lr.SetPosition (1, hookPoint + Vector3.back);
-		
+		hook.lr.enabled = false;
+		hook.ClearRopePoints ();
 	}
 
 }

@@ -26,7 +26,7 @@ GameObject:
   - component: {fileID: 232810178767197544}
   - component: {fileID: 120732206709058890}
   - component: {fileID: 114558238187487962}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4704690748220724}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: hookStartPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,15 +137,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2d8a7fe22f144ce5bca7c3d4d7591e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hookStartPoint: {fileID: 4704690748220724}
   hookPrefab: {fileID: 114962903447633066, guid: 587b3630c1c5947208b734d2b68f2024,
     type: 2}
-  hookStartPoint: {fileID: 4704690748220724}
   moveForce: 500
   jumpForce: 500
   hookReelSpeed: 5
   hookableMask:
     serializedVersion: 2
     m_Bits: 256
+  isFiring: 0
 --- !u!120 &120732206709058890
 LineRenderer:
   m_ObjectHideFlags: 1
