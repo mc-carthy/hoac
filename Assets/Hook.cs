@@ -15,6 +15,10 @@ public class Hook : MonoBehaviour {
     private Player player;
     private Rigidbody2D rb;
     private List<Vector3> staticRopePoints = new List<Vector3> ();
+    private Vector3 currentHookPoint;
+    // This is the distance to begin the collision raycast taken from the currentHookPoint in the direction of the player.
+    // This stops the raycast detecting only the currentHookPoint
+    private float hookRaycastOffset = 0.1f;
 
     public bool isLanded;
 
@@ -32,7 +36,10 @@ public class Hook : MonoBehaviour {
 
     private void Update ()
     {
-        DetectRopeCollisions ();
+        if (isLanded)
+        {
+            DetectRopeCollisions (); 
+        }
     }
 
     private void LateUpdate ()
@@ -44,7 +51,6 @@ public class Hook : MonoBehaviour {
     }
 	private void OnTriggerEnter2D (Collider2D other)
     {
-        Debug.Log ("Test");
         if (other.gameObject.tag == "ground" && player.isFiring)
         {
             lr.enabled = true;
@@ -60,7 +66,7 @@ public class Hook : MonoBehaviour {
             }
             transform.position = roundedHookPosition;
             player.HookLanded (roundedHookPosition);
-            player.HookLanded (transform.position);
+            currentHookPoint = roundedHookPosition;
         }
     }
 
@@ -102,19 +108,36 @@ public class Hook : MonoBehaviour {
 
     private void DetectRopeCollisions ()
     {
-		RaycastHit2D hit = Physics2D.Raycast (transform.position, player.HookStartPoint.position - transform.position, Mathf.Infinity, hookableMask);
+        RaycastHit2D hit = Physics2D.Raycast (
+            transform.position + hookRaycastOffset * (player.HookStartPoint.position - transform.position), 
+            player.HookStartPoint.position - transform.position, 
+            Mathf.Abs (Vector2.Distance (transform.position, player.HookStartPoint.position)),
+            hookableMask
+        );
+		
+        // Debug.DrawRay (transform.position, player.HookStartPoint.position - transform.position, Color.blue, 2f);
 
-		if (hit.collider != null)
+        if (hit.collider != null && hit.point != (Vector2)currentHookPoint)
 		{
+            // Debug.DrawLine (transform.position, hit.point, Color.red, 5f);
 			if (hit.collider.gameObject.tag == "ground")
 			{
-                AddNodeToRope (new Vector3 (hit.point.x, hit.point.y, 0));
+                Vector3 newHookPoint = Vector3.zero;
+                newHookPoint.x = hit.point.x < hit.collider.bounds.center.x ? hit.collider.bounds.min.x : hit.collider.bounds.max.x;
+                newHookPoint.y = hit.point.y < hit.collider.bounds.center.y ? hit.collider.bounds.min.y : hit.collider.bounds.max.y;
+                Debug.DrawLine (transform.position, newHookPoint, Color.red, 5f);
+                AddNodeToRope (newHookPoint);
 			}
 		}
     }
 
     private void AddNodeToRope (Vector3 newNode)
     {
+        transform.position = newNode;
+        currentHookPoint = newNode;
+        player.HookLanded (newNode);
     }
+
+
 
 }

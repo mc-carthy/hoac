@@ -43,6 +43,7 @@ public class Player : MonoBehaviour {
 	private void Update ()
 	{
 		MovePlayer ();
+
 		if (Input.GetKeyDown (KeyCode.Space))
 		{
 			if (!isJumping && !isHooked)
@@ -129,7 +130,7 @@ public class Player : MonoBehaviour {
 	public void HookLanded (Vector3 hookLandedPoint)
 	{
 		dj.connectedAnchor = hookLandedPoint;
-		dj.distance = Vector2.Distance (transform.position, hookLandedPoint);
+		dj.distance = Vector2.Distance (hookStartPoint.position, hookLandedPoint);
 		hookPoint.x = hookLandedPoint.x;
 		hookPoint.y = hookLandedPoint.y;
 		isHooked = true;
