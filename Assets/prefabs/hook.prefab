@@ -108,7 +108,7 @@ LineRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e831ac9cba51642129f0bb3a7e41a6db, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -147,10 +147,10 @@ LineRenderer:
     colorGradient:
       key0:
         serializedVersion: 2
-        rgba: 4278218166
+        rgba: 4294967295
       key1:
         serializedVersion: 2
-        rgba: 4278218166
+        rgba: 4294967295
       key2:
         serializedVersion: 2
         rgba: 0

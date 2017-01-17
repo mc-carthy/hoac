@@ -39,7 +39,11 @@ public class Hook : MonoBehaviour {
     {
         if (isLanded)
         {
-            DetectRopeCollisions (); 
+            DetectRopeCollisions ();
+            if (ropePoints.Count > 2)
+            {
+                DetectRopeSeparations ();
+            }
         }
     }
 
@@ -99,9 +103,10 @@ public class Hook : MonoBehaviour {
 
 	private void DrawRope ()
 	{
+        lr.numPositions = ropePoints.Count;
+
 		lr.SetPosition (0, transform.position + Vector3.back);
 
-        lr.numPositions = ropePoints.Count;
         for (int i = 1; i < ropePoints.Count - 1; i++)
         {
             lr.SetPosition (i, ropePoints [i - 1]);
@@ -126,7 +131,7 @@ public class Hook : MonoBehaviour {
             hookableMask
         );
 		
-        // Debug.DrawRay (raycastOrigin, player.HookStartPoint.position - transform.position, Color.blue, 2f);
+        Debug.DrawRay (raycastOrigin, player.HookStartPoint.position - currentHookPoint, Color.blue, 2f);
 
         if (hit.collider != null)
 		{
@@ -148,7 +153,15 @@ public class Hook : MonoBehaviour {
 
     private void DetectRopeSeparations ()
     {
+        Vector3 playerToCurrentAnchor = player.HookStartPoint.position - ropePoints [ropePoints.Count - 2];
+        Vector3 currentAnchorToPreviousAnchor = ropePoints [ropePoints.Count - 2] - ropePoints [ropePoints.Count - 3];
+        float angleDifference = Vector3.Angle (playerToCurrentAnchor, currentAnchorToPreviousAnchor);
 
+        if (angleDifference > 179f)
+        {
+            RemoveNodeFromRope ();
+        }
+        
     }
 
     private void AddNodeToRope (Vector3 newNode)
@@ -156,10 +169,13 @@ public class Hook : MonoBehaviour {
         currentHookPoint = newNode;
         player.HookLanded (newNode);
         ropePoints.Insert (ropePoints.Count - 2, newNode);
-        // for (int i = 0; i < ropePoints.Count; i++)
-        // {
-        //     Debug.Log ("Rope point " + i + " : " + ropePoints [i]);
-        // }
+    }
+
+    private void RemoveNodeFromRope ()
+    {
+        ropePoints.RemoveAt (ropePoints.Count - 1);
+        currentHookPoint = ropePoints [ropePoints.Count - 1];
+        player.HookLanded (currentHookPoint);
     }
 
 
