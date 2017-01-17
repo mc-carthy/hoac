@@ -129,8 +129,8 @@ public class Player : MonoBehaviour {
 
 	public void HookLanded (Vector3 hookLandedPoint)
 	{
-		dj.connectedAnchor = hookLandedPoint;
-		dj.distance = Vector2.Distance (hookStartPoint.position, hookLandedPoint);
+		dj.connectedAnchor = (Vector2)hookLandedPoint;
+		dj.distance = Vector2.Distance (transform.position, hookLandedPoint);
 		hookPoint.x = hookLandedPoint.x;
 		hookPoint.y = hookLandedPoint.y;
 		isHooked = true;

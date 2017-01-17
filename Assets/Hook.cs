@@ -16,6 +16,7 @@ public class Hook : MonoBehaviour {
     private Rigidbody2D rb;
     private List<Vector3> staticRopePoints = new List<Vector3> ();
     private Vector3 currentHookPoint;
+    private Vector3 connectedAnchorCenter;
     // This is the distance to begin the collision raycast taken from the currentHookPoint in the direction of the player.
     // This stops the raycast detecting only the currentHookPoint
     private float hookRaycastOffset = 0.1f;
@@ -55,6 +56,7 @@ public class Hook : MonoBehaviour {
         {
             lr.enabled = true;
             isLanded = true;
+            connectedAnchorCenter = other.bounds.center;
             Vector3 roundedHookPosition = new Vector3 (Mathf.Round (transform.position.x * 2) / 2, Mathf.Round (transform.position.y * 2) / 2, 0);
             if (player.transform.position.y < other.bounds.center.y)
             {
@@ -108,26 +110,37 @@ public class Hook : MonoBehaviour {
 
     private void DetectRopeCollisions ()
     {
+        // Vector2 raycastOrigin = transform.position + hookRaycastOffset * (player.HookStartPoint.position - transform.position);
+        Vector2 relativeRaycastOrigin = Vector2.zero;
+        relativeRaycastOrigin.x = currentHookPoint.x < connectedAnchorCenter.x ? -0.5f : 0.5f;
+        relativeRaycastOrigin.y = currentHookPoint.y < connectedAnchorCenter.y ? -0.5f : 0.5f;
+
+        Vector2 raycastOrigin = (Vector2)transform.position + relativeRaycastOrigin;
+
         RaycastHit2D hit = Physics2D.Raycast (
-            transform.position + hookRaycastOffset * (player.HookStartPoint.position - transform.position), 
+            raycastOrigin, 
             player.HookStartPoint.position - transform.position, 
             Mathf.Abs (Vector2.Distance (transform.position, player.HookStartPoint.position)),
             hookableMask
         );
 		
-        // Debug.DrawRay (transform.position, player.HookStartPoint.position - transform.position, Color.blue, 2f);
+        // Debug.DrawRay (raycastOrigin, player.HookStartPoint.position - transform.position, Color.blue, 2f);
 
-        if (hit.collider != null && hit.point != (Vector2)currentHookPoint)
+        if (hit.collider != null)
 		{
-            // Debug.DrawLine (transform.position, hit.point, Color.red, 5f);
-			if (hit.collider.gameObject.tag == "ground")
-			{
-                Vector3 newHookPoint = Vector3.zero;
-                newHookPoint.x = hit.point.x < hit.collider.bounds.center.x ? hit.collider.bounds.min.x : hit.collider.bounds.max.x;
-                newHookPoint.y = hit.point.y < hit.collider.bounds.center.y ? hit.collider.bounds.min.y : hit.collider.bounds.max.y;
-                Debug.DrawLine (transform.position, newHookPoint, Color.red, 5f);
-                AddNodeToRope (newHookPoint);
-			}
+            if (hit.point != (Vector2)currentHookPoint)
+            {
+            Debug.DrawLine (transform.position, hit.point, Color.red, 5f);
+                if (hit.collider.gameObject.tag == "ground")
+                {
+                    Vector3 newHookPoint = Vector3.zero;
+                    newHookPoint.x = hit.point.x < hit.collider.bounds.center.x ? hit.collider.bounds.min.x : hit.collider.bounds.max.x;
+                    newHookPoint.y = hit.point.y < hit.collider.bounds.center.y ? hit.collider.bounds.min.y : hit.collider.bounds.max.y;
+                    connectedAnchorCenter = hit.collider.bounds.center;
+                    Debug.DrawLine (transform.position, newHookPoint, Color.red, 5f);
+                    AddNodeToRope (newHookPoint);
+                }
+            }
 		}
     }
 
