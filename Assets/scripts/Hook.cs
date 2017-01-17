@@ -71,7 +71,7 @@ public class Hook : MonoBehaviour {
             currentHookPoint = roundedHookPosition;
             ropePoints.Add (transform.position);
             ropePoints.Add (player.HookStartPoint.position);
-            lr.numPositions = 2;
+            // lr.numPositions = 2;
         }
     }
 
@@ -99,13 +99,15 @@ public class Hook : MonoBehaviour {
 
 	private void DrawRope ()
 	{
-		lr.SetPosition (0, currentHookPoint + Vector3.back);
+		lr.SetPosition (0, transform.position + Vector3.back);
+
+        lr.numPositions = ropePoints.Count;
+        for (int i = 1; i < ropePoints.Count - 1; i++)
+        {
+            lr.SetPosition (i, ropePoints [i - 1]);
+        }
 		lr.SetPosition (lr.numPositions - 1, player.HookStartPoint.position + Vector3.back);
 
-        // for (int i = 0; i < ropePoints.Count - 1; i++)
-        // {
-        //     lr.SetPosition (i, ropePoints [i]);
-        // }
 	}
 
     private void DetectRopeCollisions ()
@@ -153,12 +155,11 @@ public class Hook : MonoBehaviour {
     {
         currentHookPoint = newNode;
         player.HookLanded (newNode);
-        // lr.numPositions += 1;
         ropePoints.Insert (ropePoints.Count - 2, newNode);
-        for (int i = 0; i < ropePoints.Count; i++)
-        {
-            Debug.Log ("Rope point " + i + " : " + ropePoints [i]);
-        }
+        // for (int i = 0; i < ropePoints.Count; i++)
+        // {
+        //     Debug.Log ("Rope point " + i + " : " + ropePoints [i]);
+        // }
     }
 
 
