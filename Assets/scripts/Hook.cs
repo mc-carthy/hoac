@@ -14,12 +14,12 @@ public class Hook : MonoBehaviour {
     private float hookSpeed = 5f;
     private Player player;
     private Rigidbody2D rb;
-    private List<Vector3> staticRopePoints = new List<Vector3> ();
+    private List<Vector3> ropePoints = new List<Vector3> ();
     private Vector3 currentHookPoint;
     private Vector3 connectedAnchorCenter;
-    // This is the distance to begin the collision raycast taken from the currentHookPoint in the direction of the player.
+    // This is the distance to begin the collision raycast taken from the currentHookPoint in the direction away from the conrer..
     // This stops the raycast detecting only the currentHookPoint
-    private float hookRaycastOffset = 0.1f;
+    private float hookRaycastOffset = 0.2f;
 
     public bool isLanded;
 
@@ -69,6 +69,9 @@ public class Hook : MonoBehaviour {
             transform.position = roundedHookPosition;
             player.HookLanded (roundedHookPosition);
             currentHookPoint = roundedHookPosition;
+            ropePoints.Add (transform.position);
+            ropePoints.Add (player.HookStartPoint.position);
+            lr.numPositions = 2;
         }
     }
 
@@ -90,37 +93,34 @@ public class Hook : MonoBehaviour {
 
     public void ClearRopePoints ()
     {
-        staticRopePoints.Clear ();
+        ropePoints.Clear ();
+        lr.numPositions = 0;
     }
 
 	private void DrawRope ()
 	{
-		lr.SetPosition (0, transform.position + Vector3.back);
-
-        if (lr.numPositions > 2)
-        {
-            for (int i = 1; i < lr.numPositions - 1; i++)
-            {
-                lr.SetPosition (i, staticRopePoints [i - 1]);
-            }
-        }
-
+		lr.SetPosition (0, currentHookPoint + Vector3.back);
 		lr.SetPosition (lr.numPositions - 1, player.HookStartPoint.position + Vector3.back);
+
+        // for (int i = 0; i < ropePoints.Count - 1; i++)
+        // {
+        //     lr.SetPosition (i, ropePoints [i]);
+        // }
 	}
 
     private void DetectRopeCollisions ()
     {
         // Vector2 raycastOrigin = transform.position + hookRaycastOffset * (player.HookStartPoint.position - transform.position);
         Vector2 relativeRaycastOrigin = Vector2.zero;
-        relativeRaycastOrigin.x = currentHookPoint.x < connectedAnchorCenter.x ? -0.5f : 0.5f;
-        relativeRaycastOrigin.y = currentHookPoint.y < connectedAnchorCenter.y ? -0.5f : 0.5f;
+        relativeRaycastOrigin.x = currentHookPoint.x < connectedAnchorCenter.x ? -hookRaycastOffset : hookRaycastOffset;
+        relativeRaycastOrigin.y = currentHookPoint.y < connectedAnchorCenter.y ? -hookRaycastOffset : hookRaycastOffset;
 
-        Vector2 raycastOrigin = (Vector2)transform.position + relativeRaycastOrigin;
+        Vector2 raycastOrigin = (Vector2)currentHookPoint + relativeRaycastOrigin;
 
         RaycastHit2D hit = Physics2D.Raycast (
             raycastOrigin, 
-            player.HookStartPoint.position - transform.position, 
-            Mathf.Abs (Vector2.Distance (transform.position, player.HookStartPoint.position)),
+            player.HookStartPoint.position - currentHookPoint, 
+            Mathf.Abs (Vector2.Distance (currentHookPoint, player.HookStartPoint.position)),
             hookableMask
         );
 		
@@ -130,25 +130,35 @@ public class Hook : MonoBehaviour {
 		{
             if (hit.point != (Vector2)currentHookPoint)
             {
-            Debug.DrawLine (transform.position, hit.point, Color.red, 5f);
+            Debug.DrawLine (currentHookPoint, hit.point, Color.red, 5f);
                 if (hit.collider.gameObject.tag == "ground")
                 {
                     Vector3 newHookPoint = Vector3.zero;
                     newHookPoint.x = hit.point.x < hit.collider.bounds.center.x ? hit.collider.bounds.min.x : hit.collider.bounds.max.x;
                     newHookPoint.y = hit.point.y < hit.collider.bounds.center.y ? hit.collider.bounds.min.y : hit.collider.bounds.max.y;
                     connectedAnchorCenter = hit.collider.bounds.center;
-                    Debug.DrawLine (transform.position, newHookPoint, Color.red, 5f);
+                    Debug.DrawLine (currentHookPoint, newHookPoint, Color.red, 5f);
                     AddNodeToRope (newHookPoint);
                 }
             }
 		}
     }
 
+    private void DetectRopeSeparations ()
+    {
+
+    }
+
     private void AddNodeToRope (Vector3 newNode)
     {
-        transform.position = newNode;
         currentHookPoint = newNode;
         player.HookLanded (newNode);
+        // lr.numPositions += 1;
+        ropePoints.Insert (ropePoints.Count - 2, newNode);
+        for (int i = 0; i < ropePoints.Count; i++)
+        {
+            Debug.Log ("Rope point " + i + " : " + ropePoints [i]);
+        }
     }
 
 
