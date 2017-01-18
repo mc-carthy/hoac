@@ -3,6 +3,12 @@
 [RequireComponent (typeof (DistanceJoint2D))]
 public class Player : MonoBehaviour {
 
+	public float Speed {
+		get {
+			return rb.velocity.magnitude;
+		}
+	}
+
 	[SerializeField]
 	private Transform hookStartPoint;
 	public Transform HookStartPoint 

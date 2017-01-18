@@ -19,6 +19,7 @@ public class Hook : MonoBehaviour {
     private Vector3 currentHookPoint;
     private Vector3 connectedAnchorCenter;
     private Vector3 previousConnectedAnchorCenter;
+    private float minAngleDifference = 1f;
     // This is the distance to begin the collision raycast taken from the currentHookPoint in the direction away from the conrer..
     // This stops the raycast detecting only the currentHookPoint
     private float hookRaycastOffset = 0.2f;
@@ -165,7 +166,7 @@ public class Hook : MonoBehaviour {
         Vector3 playerToPreviousAnchor = player.HookStartPoint.position - ropePoints [ropePoints.Count - 3];
         float angleDifference = Vector3.Angle (playerToCurrentAnchor, playerToPreviousAnchor);
         // Debug.Log (angleDifference);
-        if (angleDifference < 1f)
+        if (angleDifference < Mathf.Max (minAngleDifference, player.Speed / 5f))
         {
             RemoveNodeFromRope ();
         }
