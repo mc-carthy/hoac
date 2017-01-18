@@ -18,6 +18,7 @@ public class Hook : MonoBehaviour {
     private List<Vector3> ropePoints = new List<Vector3> ();
     private Vector3 currentHookPoint;
     private Vector3 connectedAnchorCenter;
+    private Vector3 previousConnectedAnchorCenter;
     // This is the distance to begin the collision raycast taken from the currentHookPoint in the direction away from the conrer..
     // This stops the raycast detecting only the currentHookPoint
     private float hookRaycastOffset = 0.2f;
@@ -146,6 +147,10 @@ public class Hook : MonoBehaviour {
                     Vector3 newHookPoint = Vector3.zero;
                     newHookPoint.x = hit.point.x < hit.collider.bounds.center.x ? hit.collider.bounds.min.x : hit.collider.bounds.max.x;
                     newHookPoint.y = hit.point.y < hit.collider.bounds.center.y ? hit.collider.bounds.min.y : hit.collider.bounds.max.y;
+                    if (ropePoints.Count == 2)
+                    {
+                        previousConnectedAnchorCenter = connectedAnchorCenter;
+                    }
                     connectedAnchorCenter = hit.collider.bounds.center;
                     Debug.DrawLine (currentHookPoint, newHookPoint, Color.red, 5f);
                     AddNodeToRope (newHookPoint);
@@ -191,6 +196,10 @@ public class Hook : MonoBehaviour {
     {
         ropePoints.RemoveAt (ropePoints.Count - 2);
         currentHookPoint = ropePoints [ropePoints.Count - 2];
+        if (ropePoints.Count == 2)
+        {
+            connectedAnchorCenter = previousConnectedAnchorCenter;
+        }
         player.HookLanded (currentHookPoint);
         // Debug.Log (currentHookPoint);
     }
