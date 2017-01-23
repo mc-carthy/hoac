@@ -171,19 +171,19 @@ public class Hook : MonoBehaviour {
         float playerToCurrentAnchorAngle = (Utilities.AngleFromVector3 (playerToCurrentAnchor) * Mathf.Rad2Deg + 360) % 360;
         float playerToPreviousAnchorAngle = (Utilities.AngleFromVector3 (playerToPreviousAnchor) * Mathf.Rad2Deg + 360) % 360;
         float currentAnchorToPreviousAnchorAngle = (Utilities.AngleFromVector3 (currentAnchorToPreviousAnchor) * Mathf.Rad2Deg + 360) % 360;
-        playerToCurrentAnchorAngle = playerToCurrentAnchorAngle == 0 ? 360 : playerToCurrentAnchorAngle;
-        currentAnchorToPreviousAnchorAngle = currentAnchorToPreviousAnchorAngle == 0 ? 360 : currentAnchorToPreviousAnchorAngle;
+        // playerToCurrentAnchorAngle = playerToCurrentAnchorAngle == 0 ? 360 : playerToCurrentAnchorAngle;
+        // currentAnchorToPreviousAnchorAngle = currentAnchorToPreviousAnchorAngle == 0 ? 360 : currentAnchorToPreviousAnchorAngle;
         Debug.Log (
             "Player to current anchor: " + playerToCurrentAnchorAngle + 
             ". Current anchor to previous anchor " + currentAnchorToPreviousAnchorAngle
         );
         // Check for clockwise rope separation
-        if (playerToCurrentAnchorAngle < currentAnchorToPreviousAnchorAngle && playerToCurrentAnchorAngle > (currentAnchorToPreviousAnchorAngle + 270) % 360)
-        {
-            RemoveNodeFromRope ();
-        }
+        // if (playerToCurrentAnchorAngle < currentAnchorToPreviousAnchorAngle && playerToCurrentAnchorAngle > (currentAnchorToPreviousAnchorAngle + 270) % 360)
+        // {
+        //     RemoveNodeFromRope ();
+        // }
         // Check for anticlockwise separation
-        if (playerToCurrentAnchorAngle < currentAnchorToPreviousAnchorAngle && playerToCurrentAnchorAngle > (currentAnchorToPreviousAnchorAngle + 270) % 360)
+        if (playerToCurrentAnchorAngle > currentAnchorToPreviousAnchorAngle && (playerToCurrentAnchorAngle - 90) % 360 < currentAnchorToPreviousAnchorAngle)
         {
             RemoveNodeFromRope ();
         }
