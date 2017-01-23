@@ -23,7 +23,7 @@ public class Hook : MonoBehaviour {
     // This is the distance to begin the collision raycast taken from the currentHookPoint in the direction away from the conrer..
     // This stops the raycast detecting only the currentHookPoint
     private float hookRaycastOffset = 0.2f;
-
+    private int numHookEdgeIterations = 10;
     public bool isLanded;
 
     private void Awake ()
@@ -142,9 +142,10 @@ public class Hook : MonoBehaviour {
 		{
             if (hit.point != (Vector2)currentHookPoint)
             {
-            // Debug.DrawLine (currentHookPoint, hit.point, Color.red, 5f);
+            Debug.DrawLine (currentHookPoint, hit.point, Color.red, 5f);
                 if (hit.collider.gameObject.tag == "ground")
                 {
+                    FindHookEdgePoint (currentHookPoint, hit.point, hit.collider, player.Velocity, numHookEdgeIterations);
                     Vector3 newHookPoint = Vector3.zero;
                     newHookPoint.x = hit.point.x < hit.collider.bounds.center.x ? hit.collider.bounds.min.x : hit.collider.bounds.max.x;
                     newHookPoint.y = hit.point.y < hit.collider.bounds.center.y ? hit.collider.bounds.min.y : hit.collider.bounds.max.y;
@@ -164,13 +165,28 @@ public class Hook : MonoBehaviour {
     {
         Vector3 playerToCurrentAnchor = player.HookStartPoint.position - ropePoints [ropePoints.Count - 2];
         Vector3 playerToPreviousAnchor = player.HookStartPoint.position - ropePoints [ropePoints.Count - 3];
-        float angleDifference = Vector3.Angle (playerToCurrentAnchor, playerToPreviousAnchor);
-        // Debug.Log (angleDifference);
-        if (angleDifference < Mathf.Max (minAngleDifference, player.Speed / 5f))
+        Vector3 currentAnchorToPreviousAnchor = ropePoints [ropePoints.Count - 2] - ropePoints [ropePoints.Count - 3];
+
+        // Ensure the angles between points are greater than 0 and less than or equal to 360
+        float playerToCurrentAnchorAngle = (Utilities.AngleFromVector3 (playerToCurrentAnchor) * Mathf.Rad2Deg + 360) % 360;
+        float playerToPreviousAnchorAngle = (Utilities.AngleFromVector3 (playerToPreviousAnchor) * Mathf.Rad2Deg + 360) % 360;
+        float currentAnchorToPreviousAnchorAngle = (Utilities.AngleFromVector3 (currentAnchorToPreviousAnchor) * Mathf.Rad2Deg + 360) % 360;
+        playerToCurrentAnchorAngle = playerToCurrentAnchorAngle == 0 ? 360 : playerToCurrentAnchorAngle;
+        currentAnchorToPreviousAnchorAngle = currentAnchorToPreviousAnchorAngle == 0 ? 360 : currentAnchorToPreviousAnchorAngle;
+        Debug.Log (
+            "Player to current anchor: " + playerToCurrentAnchorAngle + 
+            ". Current anchor to previous anchor " + currentAnchorToPreviousAnchorAngle
+        );
+        // Check for clockwise rope separation
+        if (playerToCurrentAnchorAngle < currentAnchorToPreviousAnchorAngle && playerToCurrentAnchorAngle > (currentAnchorToPreviousAnchorAngle + 270) % 360)
         {
             RemoveNodeFromRope ();
         }
-        
+        // Check for anticlockwise separation
+        if (playerToCurrentAnchorAngle < currentAnchorToPreviousAnchorAngle && playerToCurrentAnchorAngle > (currentAnchorToPreviousAnchorAngle + 270) % 360)
+        {
+            RemoveNodeFromRope ();
+        }
     }
 
     private void AddNodeToRope (Vector3 newNode)
@@ -202,9 +218,39 @@ public class Hook : MonoBehaviour {
             connectedAnchorCenter = previousConnectedAnchorCenter;
         }
         player.HookLanded (currentHookPoint);
-        // Debug.Log (currentHookPoint);
     }
 
+    private Vector3 FindHookEdgePoint (Vector3 currentAnchor, Vector3 triggerPoint, Collider2D triggerCollider, Vector3 playerVelocity, int numInterations, float initialDegreesOffset = 5f)
+    {
+        Vector3 edgePoint = Vector3.zero;
+        Vector3 currentHookPointToTriggerPoint = triggerPoint - currentAnchor;
+        Vector3 directionToTriggerPoint = currentHookPointToTriggerPoint.normalized;
 
+        Vector3 previousUnitPlayerPos = player.HookStartPoint.position - playerVelocity.normalized;
+        Vector3 currentHookPointToPreviousPlayerPos = triggerPoint - previousUnitPlayerPos;
+
+
+        Vector3 minPos = previousUnitPlayerPos;
+        Vector3 maxPos = triggerPoint;
+        Vector3 targetPos = (minPos + maxPos) / 2f;
+
+        for (int i = 0; i < numInterations; i++)
+        {
+            RaycastHit2D findEdgeRay = Physics2D.Raycast (
+                currentHookPoint, 
+                targetPos - currentHookPoint,
+                Mathf.Abs (Vector2.Distance (currentHookPoint, player.HookStartPoint.position)),
+                hookableMask
+            );
+
+            if (findEdgeRay.collider != triggerCollider)
+            // Ray is no longer hitting the same collider as trigger, set target to halway between max and min points
+            {
+                
+            }
+        }
+
+        return edgePoint;
+    }
 
 }

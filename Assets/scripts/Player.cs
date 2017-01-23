@@ -3,9 +3,9 @@
 [RequireComponent (typeof (DistanceJoint2D))]
 public class Player : MonoBehaviour {
 
-	public float Speed {
+	public Vector3 Velocity {
 		get {
-			return rb.velocity.magnitude;
+			return rb.velocity;
 		}
 	}
 
