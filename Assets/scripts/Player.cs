@@ -19,11 +19,11 @@ public class Player : MonoBehaviour {
 	[SerializeField]
 	private Hook hookPrefab;
 	[SerializeField]
-	private float moveForce = 500;
+	private float moveForce = 100f;
 	[SerializeField]
-	private float jumpForce = 500;
+	private float jumpForce = 500f;
 	[SerializeField]
-	private float hookReelSpeed = 5;
+	private float hookReelSpeed = 5f;
 	[SerializeField]
 	private LayerMask hookableMask;
 	private Hook hook;
@@ -33,6 +33,7 @@ public class Player : MonoBehaviour {
 	private bool isHooked = false;
 	public bool isFiring = false;
 	private bool isJumping = false;
+	private float speedLimit = 10f;
 	private float hookMinDist = 1f;
 	private float hookMaxDist = 30f;
 
@@ -85,6 +86,15 @@ public class Player : MonoBehaviour {
 		{
 			RetractHook ();
 		}
+	}
+
+	private void FixedUpdate ()
+	{
+		// if (rb.velocity.magnitude > speedLimit)
+		// {
+		// 	float brakeSpeed = rb.velocity.magnitude - speedLimit;
+		// 	rb.AddForce (-rb.velocity.normalized * brakeSpeed);
+		// }
 	}
 
 	private void OnCollisionEnter2D (Collision2D other)
@@ -152,13 +162,15 @@ public class Player : MonoBehaviour {
 		{
 			dj.distance += IsAreaAroundTheHookedPlayerClear (1f);
 		}
-		if (IsAreaAroundTheHookedPlayerClear (-1f) != 0)
+		else if (IsAreaAroundTheHookedPlayerClear (-1f) != 0)
 		{
 			dj.distance -= IsAreaAroundTheHookedPlayerClear (-1f);
 		}
-
-		dj.distance += Input.GetAxis ("Vertical") * -hookReelSpeed * Time.deltaTime;
-		dj.distance = Mathf.Clamp (dj.distance, hookMinDist, hookMaxDist);
+		else
+		{
+			dj.distance += Input.GetAxis ("Vertical") * -hookReelSpeed * Time.deltaTime;
+			dj.distance = Mathf.Clamp (dj.distance, hookMinDist, hookMaxDist);
+		}
 
 	}
 
