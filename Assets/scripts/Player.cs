@@ -33,6 +33,8 @@ public class Player : MonoBehaviour {
 	private bool isHooked = false;
 	public bool isFiring = false;
 	private bool isJumping = false;
+	private float hookMinDist = 1f;
+	private float hookMaxDist = 30f;
 
 	private void Awake ()
 	{
@@ -147,6 +149,7 @@ public class Player : MonoBehaviour {
 	private void AlterHookDistance ()
 	{
 		dj.distance += Input.GetAxis ("Vertical") * -hookReelSpeed * Time.deltaTime;
+		dj.distance = Mathf.Clamp (dj.distance, hookMinDist, hookMaxDist);
 	}
 
 	private void RetractHook ()
