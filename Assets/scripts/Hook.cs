@@ -167,25 +167,27 @@ public class Hook : MonoBehaviour {
         Vector3 playerToPreviousAnchor = player.HookStartPoint.position - ropePoints [ropePoints.Count - 3];
         Vector3 currentAnchorToPreviousAnchor = ropePoints [ropePoints.Count - 2] - ropePoints [ropePoints.Count - 3];
 
-        // Ensure the angles between points are greater than 0 and less than or equal to 360
-        float playerToCurrentAnchorAngle = (Utilities.AngleFromVector3 (playerToCurrentAnchor) * Mathf.Rad2Deg + 360) % 360;
-        float playerToPreviousAnchorAngle = (Utilities.AngleFromVector3 (playerToPreviousAnchor) * Mathf.Rad2Deg + 360) % 360;
-        float currentAnchorToPreviousAnchorAngle = (Utilities.AngleFromVector3 (currentAnchorToPreviousAnchor) * Mathf.Rad2Deg + 360) % 360;
-        // playerToCurrentAnchorAngle = playerToCurrentAnchorAngle == 0 ? 360 : playerToCurrentAnchorAngle;
-        // currentAnchorToPreviousAnchorAngle = currentAnchorToPreviousAnchorAngle == 0 ? 360 : currentAnchorToPreviousAnchorAngle;
-        Debug.Log (
-            "Player to current anchor: " + playerToCurrentAnchorAngle + 
-            ". Current anchor to previous anchor " + currentAnchorToPreviousAnchorAngle
-        );
-        // Check for clockwise rope separation
-        // if (playerToCurrentAnchorAngle < currentAnchorToPreviousAnchorAngle && playerToCurrentAnchorAngle > (currentAnchorToPreviousAnchorAngle + 270) % 360)
-        // {
-        //     RemoveNodeFromRope ();
-        // }
-        // Check for anticlockwise separation
-        if (playerToCurrentAnchorAngle > currentAnchorToPreviousAnchorAngle && (playerToCurrentAnchorAngle - 90) % 360 < currentAnchorToPreviousAnchorAngle)
+        // Ensure the angles between points are greater or equal to 0 and less than to 360
+        float playerToCurrentAnchorAngle = (Utilities.AngleFromVector3 (playerToCurrentAnchor) + 360) % 360;
+        float playerToPreviousAnchorAngle = (Utilities.AngleFromVector3 (playerToPreviousAnchor) + 360) % 360;
+        float currentAnchorToPreviousAnchorAngle = (Utilities.AngleFromVector3 (currentAnchorToPreviousAnchor) + 360) % 360;
+
+        // Check for swinging direction
+        if (IsSwingingClockwise ())
         {
-            RemoveNodeFromRope ();
+            playerToCurrentAnchorAngle = playerToCurrentAnchorAngle == 0 ? 360 : playerToCurrentAnchorAngle;
+            currentAnchorToPreviousAnchorAngle = currentAnchorToPreviousAnchorAngle == 0 ? 360 : currentAnchorToPreviousAnchorAngle;
+            if (playerToCurrentAnchorAngle < currentAnchorToPreviousAnchorAngle && playerToCurrentAnchorAngle > (currentAnchorToPreviousAnchorAngle + 270) % 360)
+            {
+                RemoveNodeFromRope ();
+            }
+        }
+        else
+        {
+            if (playerToCurrentAnchorAngle > currentAnchorToPreviousAnchorAngle && (playerToCurrentAnchorAngle - 90) % 360 < currentAnchorToPreviousAnchorAngle)
+            {
+                RemoveNodeFromRope ();
+            }
         }
     }
 
@@ -251,6 +253,56 @@ public class Hook : MonoBehaviour {
         }
 
         return edgePoint;
+    }
+
+    private bool IsSwingingClockwise ()
+    {
+
+        Vector3 currentAnchorPoint = ropePoints [ropePoints.Count - 2];
+        Vector3 previousAnchorPoint = ropePoints [ropePoints.Count - 3];
+
+        Vector3 midPoint = (currentAnchorPoint + previousAnchorPoint) / 2;
+        int direction = (int)Utilities.AngleFromVector3 (previousAnchorPoint - currentAnchorPoint);
+        
+        Debug.Log (direction);
+
+        // Right
+        if (direction == 0 || direction > 270)
+        {
+            if (currentAnchorPoint.y < connectedAnchorCenter.y)
+            {
+                return false;
+            }
+            return true;
+        }
+        // Up
+        else if (direction <= 90)
+        {
+            if (currentAnchorPoint.x > connectedAnchorCenter.x)
+            {
+                return false;
+            }
+            return true;
+        }
+        // Left
+        else if (direction <= 180)
+        {
+            if (currentAnchorPoint.y > connectedAnchorCenter.y)
+            {
+                return false;
+            }
+            return true;
+        // Down
+        }
+        else if (direction <= 270)
+        {
+            if (currentAnchorPoint.x < connectedAnchorCenter.x)
+            {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
 }
