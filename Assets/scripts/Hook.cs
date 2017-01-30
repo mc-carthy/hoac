@@ -264,7 +264,10 @@ public class Hook : MonoBehaviour {
         Vector3 midPoint = (currentAnchorPoint + previousAnchorPoint) / 2;
         int direction = (int)Utilities.AngleFromVector3 (previousAnchorPoint - currentAnchorPoint);
         
-        Debug.Log (direction);
+        if (direction < 0)
+        {
+            direction += 360;
+        }
 
         // Right
         if (direction == 0 || direction > 270)
