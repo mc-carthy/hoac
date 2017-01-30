@@ -148,8 +148,47 @@ public class Player : MonoBehaviour {
 
 	private void AlterHookDistance ()
 	{
+		if (IsAreaAroundTheHookedPlayerClear (1f) != 0)
+		{
+			dj.distance += IsAreaAroundTheHookedPlayerClear (1f);
+		}
+		if (IsAreaAroundTheHookedPlayerClear (-1f) != 0)
+		{
+			dj.distance -= IsAreaAroundTheHookedPlayerClear (-1f);
+		}
+
 		dj.distance += Input.GetAxis ("Vertical") * -hookReelSpeed * Time.deltaTime;
 		dj.distance = Mathf.Clamp (dj.distance, hookMinDist, hookMaxDist);
+
+	}
+
+	private float IsAreaAroundTheHookedPlayerClear (float sign, float distance = 1f)
+	{
+		Vector3 ropeVector = (Vector3)dj.connectedAnchor - hookStartPoint.position;
+		ropeVector.Normalize ();
+
+		RaycastHit2D checkCollisionRay = Physics2D.Raycast (
+			hookStartPoint.position, 
+			ropeVector * sign,
+			distance,
+			hookableMask
+		);
+
+		if (checkCollisionRay.collider != null)
+		{
+			// Debug.DrawLine (hookStartPoint.position, checkCollisionRay.point, Color.red, 5f);
+			return distance - Vector3.Distance (checkCollisionRay.point, hookStartPoint.position);
+		}
+
+		// Debug.DrawRay (
+		// 	hookStartPoint.position,
+		// 	ropeVector * sign,
+		// 	Color.blue,
+		// 	1f
+		// );
+
+		return 0f;
+
 	}
 
 	private void RetractHook ()
