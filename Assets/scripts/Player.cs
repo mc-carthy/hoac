@@ -35,7 +35,7 @@ public class Player : MonoBehaviour {
 	private bool isJumping = false;
 	private float speedLimit = 10f;
 	private float hookMinDist = 1f;
-	private float hookMaxDist = 30f;
+	private float hookMaxDist = 10f;
 
 	private void Awake ()
 	{
@@ -51,8 +51,6 @@ public class Player : MonoBehaviour {
 
 	private void Update ()
 	{
-		MovePlayer ();
-
 		if (Input.GetKeyDown (KeyCode.Space))
 		{
 			if (!isJumping && !isHooked)
@@ -90,11 +88,14 @@ public class Player : MonoBehaviour {
 
 	private void FixedUpdate ()
 	{
-		// if (rb.velocity.magnitude > speedLimit)
-		// {
-		// 	float brakeSpeed = rb.velocity.magnitude - speedLimit;
-		// 	rb.AddForce (-rb.velocity.normalized * brakeSpeed);
-		// }
+		if (isHooked)
+		{
+			MovePlayer (moveForce / 5f);
+		}
+		else 
+		{
+			MovePlayer (moveForce);
+		}
 	}
 
 	private void OnCollisionEnter2D (Collision2D other)
@@ -113,9 +114,9 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	private void MovePlayer ()
+	private void MovePlayer (float force)
 	{
-		rb.AddForce (Vector2.right * Input.GetAxisRaw ("Horizontal") * moveForce * Time.deltaTime);
+		rb.AddForce (Vector2.right * Input.GetAxisRaw ("Horizontal") * force * Time.deltaTime);
 	}
 
 	private void Jump ()

@@ -140,7 +140,7 @@ MonoBehaviour:
   hookStartPoint: {fileID: 4704690748220724}
   hookPrefab: {fileID: 114962903447633066, guid: 587b3630c1c5947208b734d2b68f2024,
     type: 2}
-  moveForce: 100
+  moveForce: 500
   jumpForce: 500
   hookReelSpeed: 5
   hookableMask:

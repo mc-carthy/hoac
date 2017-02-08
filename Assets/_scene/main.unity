@@ -5555,15 +5555,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 120732206709058890, guid: 92c96c48ab07640339b9d0514b7ca9e9,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 114558238187487962, guid: 92c96c48ab07640339b9d0514b7ca9e9,
         type: 2}
       propertyPath: moveForce
-      value: 250
+      value: 500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 92c96c48ab07640339b9d0514b7ca9e9, type: 2}
