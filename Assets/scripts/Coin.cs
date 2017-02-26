@@ -6,6 +6,7 @@ public class Coin : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player")
         {
+            CoinManager.Instance.AddToCoinCount ();
             Destroy (gameObject);
         }
     }

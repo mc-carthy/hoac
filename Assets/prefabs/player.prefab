@@ -141,7 +141,7 @@ MonoBehaviour:
   hookPrefab: {fileID: 114962903447633066, guid: 587b3630c1c5947208b734d2b68f2024,
     type: 2}
   moveForce: 500
-  jumpForce: 500
+  jumpForce: 250
   hookReelSpeed: 5
   hookableMask:
     serializedVersion: 2

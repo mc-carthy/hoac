@@ -21,7 +21,7 @@ public class Player : MonoBehaviour {
 	[SerializeField]
 	private float moveForce = 100f;
 	[SerializeField]
-	private float jumpForce = 500f;
+	private float jumpForce = 250f;
 	[SerializeField]
 	private float hookReelSpeed = 5f;
 	[SerializeField]
