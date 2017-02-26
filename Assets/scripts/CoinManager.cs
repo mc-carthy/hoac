@@ -17,12 +17,21 @@ public class CoinManager : Singleton<CoinManager> {
     public void AddToCoinCount ()
     {
         coinsCollected++;
+        if (coinsCollected == totalCoins)
+        {
+            OpenDoor ();
+        }
         UpdateCoinText ();
     }
 
     private void UpdateCoinText ()
     {
         coinText.text = "Coins: " + coinsCollected.ToString () + " / " + totalCoins.ToString ();
+    }
+
+    private void OpenDoor ()
+    {
+        Door.Instance.UpdateDoorOpenStatus (true);
     }
 
 }
