@@ -2336,6 +2336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeText: {fileID: 702199778}
+  winText: {fileID: 983533419}
 --- !u!1 &666272722
 GameObject:
   m_ObjectHideFlags: 0

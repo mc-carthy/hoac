@@ -114,7 +114,7 @@ public class Hook : MonoBehaviour {
 
         for (int i = 1; i < ropePoints.Count - 1; i++)
         {
-            lr.SetPosition (i, ropePoints [i]);
+            lr.SetPosition (i, ropePoints [i] + Vector3.back);
         }
 		lr.SetPosition (lr.numPositions - 1, player.HookStartPoint.position + Vector3.back);
 
