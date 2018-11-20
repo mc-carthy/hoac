@@ -102,13 +102,13 @@ public class Hook : MonoBehaviour {
     public void ClearRopePoints ()
     {
         ropePoints.Clear ();
-        lr.numPositions = 0;
+        lr.positionCount = 0;
         col.enabled = true;
     }
 
 	private void DrawRope ()
 	{
-        lr.numPositions = ropePoints.Count;
+        lr.positionCount = ropePoints.Count;
 
 		lr.SetPosition (0, transform.position + Vector3.back);
 
@@ -116,7 +116,7 @@ public class Hook : MonoBehaviour {
         {
             lr.SetPosition (i, ropePoints [i] + Vector3.back);
         }
-		lr.SetPosition (lr.numPositions - 1, player.HookStartPoint.position + Vector3.back);
+		lr.SetPosition (lr.positionCount - 1, player.HookStartPoint.position + Vector3.back);
 
 	}
 
